@@ -683,11 +683,8 @@ func backupIRQs() {
 func Open() (err error) {
 	var file *os.File
 
-	// Open fd for rw mem access; try dev/mem first (need root)
-	file, err = os.OpenFile("/dev/mem", os.O_RDWR|os.O_SYNC, 0)
-	if os.IsPermission(err) { // try gpiomem otherwise (some extra functions like clock and pwm setting wont work)
-		file, err = os.OpenFile("/dev/gpiomem", os.O_RDWR|os.O_SYNC, 0)
-	}
+	// Open fd for rw mem access; always use dev/gpiomem (no need for root)
+	file, err = os.OpenFile("/dev/gpiomem", os.O_RDWR|os.O_SYNC, 0)
 	if err != nil {
 		return
 	}
